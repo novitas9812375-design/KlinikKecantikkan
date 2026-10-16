@@ -30,4 +30,9 @@ public class PerawatanWajah extends Perawatan {
     public void infoPersiapan() {
         System.out.println("   -> Persiapan: wajah bersih tanpa make-up, hindari skincare aktif 1 hari sebelumnya.");
     }
+
+    @Override
+    public void prosesPerawatan() {
+        System.out.println("   -> [PROSES WAJAH] Terapis membersihkan wajah, ekstraksi, lalu aplikasi masker.");
+    }
 }

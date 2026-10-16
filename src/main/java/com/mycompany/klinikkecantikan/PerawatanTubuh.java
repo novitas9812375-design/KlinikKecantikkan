@@ -30,4 +30,9 @@ public class PerawatanTubuh extends Perawatan {
     public void infoPersiapan() {
         System.out.println("   -> Persiapan: gunakan pakaian longgar, disarankan mandi sebelum perawatan.");
     }
+
+    @Override
+    public void prosesPerawatan() {
+        System.out.println("   -> [PROSES TUBUH] Terapis memijat dan melulur area " + this.areaTubuh + ".");
+    }
 }

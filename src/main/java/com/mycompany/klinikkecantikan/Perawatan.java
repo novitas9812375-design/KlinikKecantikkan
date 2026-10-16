@@ -59,7 +59,7 @@ public class Perawatan {
         return String.format(Locale.forLanguageTag("id-ID"), "Rp %,d", angka);
     }
 
-    // ===== Method yang akan di-override oleh subclass =====
+    // ===== Method yang akan di-override oleh subclass (Runtime Polymorphism) =====
     public void tampilkanInfo() {
         System.out.printf("%-10s | %-22s | %-12s | %3d menit%n",
                 "[Umum]", this.nama, formatRupiah(this.harga), this.durasiMenit);
@@ -67,5 +67,9 @@ public class Perawatan {
 
     public void infoPersiapan() {
         System.out.println("   -> Persiapan: datang 10 menit sebelum jadwal.");
+    }
+
+    public void prosesPerawatan() {
+        System.out.println("   -> [PROSES] Perawatan umum dimulai oleh terapis.");
     }
 }
