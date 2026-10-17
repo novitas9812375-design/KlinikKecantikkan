@@ -2,30 +2,24 @@ package com.mycompany.klinikkecantikan;
 
 import java.util.Locale;
 
-// SUPERCLASS (induk): data umum semua jenis perawatan
-public class Perawatan {
-    // Encapsulation: semua field private
+public abstract class Perawatan {
     private String nama;
-    private int harga;        // dalam rupiah
+    private int harga;
     private int durasiMenit;
 
-    // Static: milik class, dipakai bersama oleh semua objek
     private static int totalPerawatan = 0;
 
-    // Constructor + this
     public Perawatan(String nama, int harga, int durasiMenit) {
         this.nama = nama;
-        setHarga(harga);          // lewat setter supaya validasi ikut jalan
+        setHarga(harga);
         setDurasiMenit(durasiMenit);
         totalPerawatan++;
     }
 
-    // ===== Getter =====
     public String getNama() { return this.nama; }
     public int getHarga() { return this.harga; }
     public int getDurasiMenit() { return this.durasiMenit; }
 
-    // ===== Setter + validasi =====
     public void setNama(String nama) {
         if (nama != null && !nama.trim().isEmpty()) {
             this.nama = nama;
@@ -52,14 +46,12 @@ public class Perawatan {
         }
     }
 
-    // ===== Static =====
     public static int getTotalPerawatan() { return totalPerawatan; }
 
     public static String formatRupiah(int angka) {
         return String.format(Locale.forLanguageTag("id-ID"), "Rp %,d", angka);
     }
 
-    // ===== Method yang akan di-override oleh subclass (Runtime Polymorphism) =====
     public void tampilkanInfo() {
         System.out.printf("%-10s | %-22s | %-12s | %3d menit%n",
                 "[Umum]", this.nama, formatRupiah(this.harga), this.durasiMenit);
@@ -72,4 +64,6 @@ public class Perawatan {
     public void prosesPerawatan() {
         System.out.println("   -> [PROSES] Perawatan umum dimulai oleh terapis.");
     }
+
+    public abstract void hitungBiayaTambahan();
 }

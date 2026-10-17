@@ -1,8 +1,7 @@
 package com.mycompany.klinikkecantikan;
 
-// SUBCLASS 3 (BARU di Modul 6)
-public class PerawatanRambut extends Perawatan {
-    private String jenisRambut; // contoh: Lurus, Keriting, Berminyak, Rontok
+public class PerawatanRambut extends Perawatan implements DapatDiberiDiskon {
+    private String jenisRambut;
 
     public PerawatanRambut(String nama, int harga, int durasiMenit, String jenisRambut) {
         super(nama, harga, durasiMenit);
@@ -34,5 +33,17 @@ public class PerawatanRambut extends Perawatan {
     @Override
     public void prosesPerawatan() {
         System.out.println("   -> [PROSES RAMBUT] Terapis melakukan scalp massage lalu hair mask untuk rambut " + this.jenisRambut + ".");
+    }
+
+    @Override
+    public void hitungBiayaTambahan() {
+        System.out.println("   -> [BIAYA] Biaya tambahan Rp 20.000 (vitamin rambut " + this.jenisRambut + ").");
+    }
+
+    @Override
+    public void terapkanDiskon(int persen) {
+        int hargaAkhir = getHarga() - (getHarga() * persen / 100);
+        System.out.println("   -> [DISKON] Diskon " + persen + "% untuk perawatan rambut, harga menjadi "
+                + formatRupiah(hargaAkhir) + ".");
     }
 }

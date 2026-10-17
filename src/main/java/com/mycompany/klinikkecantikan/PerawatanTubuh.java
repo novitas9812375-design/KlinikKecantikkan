@@ -1,8 +1,7 @@
 package com.mycompany.klinikkecantikan;
 
-// SUBCLASS 2
-public class PerawatanTubuh extends Perawatan {
-    private String areaTubuh; // contoh: Punggung, Kaki, Seluruh Tubuh
+public class PerawatanTubuh extends Perawatan implements DapatDijadwalkan {
+    private String areaTubuh;
 
     public PerawatanTubuh(String nama, int harga, int durasiMenit, String areaTubuh) {
         super(nama, harga, durasiMenit);
@@ -34,5 +33,15 @@ public class PerawatanTubuh extends Perawatan {
     @Override
     public void prosesPerawatan() {
         System.out.println("   -> [PROSES TUBUH] Terapis memijat dan melulur area " + this.areaTubuh + ".");
+    }
+
+    @Override
+    public void hitungBiayaTambahan() {
+        System.out.println("   -> [BIAYA] Biaya tambahan Rp 15.000 (minyak aromaterapi area " + this.areaTubuh + ").");
+    }
+
+    @Override
+    public void jadwalkanKunjungan() {
+        System.out.println("   -> [JADWAL] Sesi perawatan tubuh dijadwalkan, mohon datang dalam kondisi segar.");
     }
 }

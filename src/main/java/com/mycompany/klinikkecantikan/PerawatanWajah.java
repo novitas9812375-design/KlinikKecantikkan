@@ -1,11 +1,10 @@
 package com.mycompany.klinikkecantikan;
 
-// SUBCLASS 1
-public class PerawatanWajah extends Perawatan {
-    private String jenisKulit; // contoh: Berminyak, Kering, Sensitif
+public class PerawatanWajah extends Perawatan implements DapatDijadwalkan, DapatDiberiDiskon {
+    private String jenisKulit;
 
     public PerawatanWajah(String nama, int harga, int durasiMenit, String jenisKulit) {
-        super(nama, harga, durasiMenit); // panggil constructor induk
+        super(nama, harga, durasiMenit);
         setJenisKulit(jenisKulit);
     }
 
@@ -34,5 +33,22 @@ public class PerawatanWajah extends Perawatan {
     @Override
     public void prosesPerawatan() {
         System.out.println("   -> [PROSES WAJAH] Terapis membersihkan wajah, ekstraksi, lalu aplikasi masker.");
+    }
+
+    @Override
+    public void hitungBiayaTambahan() {
+        System.out.println("   -> [BIAYA] Biaya tambahan Rp 25.000 (serum khusus kulit " + this.jenisKulit + ").");
+    }
+
+    @Override
+    public void jadwalkanKunjungan() {
+        System.out.println("   -> [JADWAL] Kunjungan facial dijadwalkan, datang 10 menit lebih awal.");
+    }
+
+    @Override
+    public void terapkanDiskon(int persen) {
+        int hargaAkhir = getHarga() - (getHarga() * persen / 100);
+        System.out.println("   -> [DISKON] Diskon " + persen + "% untuk perawatan wajah, harga menjadi "
+                + formatRupiah(hargaAkhir) + ".");
     }
 }

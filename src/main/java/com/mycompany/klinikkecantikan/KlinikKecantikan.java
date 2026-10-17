@@ -3,13 +3,6 @@ package com.mycompany.klinikkecantikan;
 import java.util.Scanner;
 
 public class KlinikKecantikan {
-
-    // =====================================================================
-    // COMPILE-TIME POLYMORPHISM (Method Overloading / Static Binding)
-    // Nama sama (cariPerawatan), parameter berbeda -> dipilih kompiler.
-    // =====================================================================
-
-    // Versi 1: cari berdasarkan nama (String)
     public static void cariPerawatan(String kataKunci, Perawatan[] daftar, int jumlah) {
         System.out.println("Mencari perawatan dengan nama mengandung: \"" + kataKunci + "\"");
         boolean ditemukan = false;
@@ -23,7 +16,6 @@ public class KlinikKecantikan {
         if (!ditemukan) System.out.println("Perawatan tidak ditemukan.");
     }
 
-    // Versi 2: cari berdasarkan harga maksimal (int)
     public static void cariPerawatan(int hargaMaksimal, Perawatan[] daftar, int jumlah) {
         System.out.println("Mencari perawatan dengan harga maksimal " + Perawatan.formatRupiah(hargaMaksimal));
         boolean ditemukan = false;
@@ -37,7 +29,6 @@ public class KlinikKecantikan {
         if (!ditemukan) System.out.println("Perawatan tidak ditemukan.");
     }
 
-    // Versi 3 (BARU): cari berdasarkan rentang harga (jumlah parameter berbeda: int, int)
     public static void cariPerawatan(int hargaMin, int hargaMaks, Perawatan[] daftar, int jumlah) {
         System.out.println("Mencari perawatan dengan harga " + Perawatan.formatRupiah(hargaMin)
                 + " sampai " + Perawatan.formatRupiah(hargaMaks));
@@ -53,42 +44,49 @@ public class KlinikKecantikan {
         if (!ditemukan) System.out.println("Perawatan tidak ditemukan.");
     }
 
-    // =====================================================================
-    // UPCASTING PADA PARAMETER
-    // Parameter bertipe Superclass (Perawatan), jadi boleh diisi objek
-    // PerawatanWajah / PerawatanTubuh / PerawatanRambut.
-    // DYNAMIC BINDING: Java memilih method milik objek aslinya saat runtime.
-    // =====================================================================
-    public static void simulasiPerawatan(Perawatan perawatan) {
-        System.out.println("=== SIMULASI PERAWATAN: " + perawatan.getNama() + " ===");
-        perawatan.infoPersiapan();   // method hasil override
-        perawatan.prosesPerawatan(); // method hasil override
+    public static void jalankanFiturInterface(Perawatan perawatan) {
+        if (perawatan instanceof DapatDijadwalkan) {
+            DapatDijadwalkan bisaJadwal = (DapatDijadwalkan) perawatan;
+            bisaJadwal.jadwalkanKunjungan();
+        } else {
+            System.out.println("   -> [JADWAL] Perawatan ini tidak mendukung penjadwalan khusus.");
+        }
+
+        if (perawatan instanceof DapatDiberiDiskon) {
+            DapatDiberiDiskon bisaDiskon = (DapatDiberiDiskon) perawatan;
+            bisaDiskon.terapkanDiskon(10);
+        } else {
+            System.out.println("   -> [DISKON] Perawatan ini tidak termasuk program diskon.");
+        }
     }
 
-    // Helper: baca angka dengan aman (ulangi sampai user mengetik angka)
+    public static void simulasiPerawatan(Perawatan perawatan) {
+        System.out.println("=== SIMULASI PERAWATAN: " + perawatan.getNama() + " ===");
+        perawatan.infoPersiapan();
+        perawatan.prosesPerawatan();
+        perawatan.hitungBiayaTambahan();
+        jalankanFiturInterface(perawatan);
+    }
+
     public static int bacaAngka(Scanner scanner, String pesan) {
         while (true) {
             System.out.print(pesan);
             if (scanner.hasNextInt()) {
                 int nilai = scanner.nextInt();
-                scanner.nextLine(); // bersihkan sisa enter
+                scanner.nextLine();
                 return nilai;
             }
-            scanner.nextLine(); // buang input yang bukan angka
+            scanner.nextLine();
             System.out.println("Input harus berupa angka!");
         }
     }
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
-
-            // SUPERCLASS REFERENCE: array bertipe Perawatan (superclass),
-            // tetapi isinya boleh objek dari seluruh subclass (UPCASTING).
             Perawatan[] daftarPerawatan = new Perawatan[10];
             int jumlahPerawatan = 0;
             boolean isRunning = true;
 
-            // 5 data awal (mencakup 3 variasi subclass)
             daftarPerawatan[jumlahPerawatan++] = new PerawatanWajah("Facial Acne Care", 250000, 60, "Berminyak");
             daftarPerawatan[jumlahPerawatan++] = new PerawatanWajah("Facial Hydrating", 300000, 75, "Kering");
             daftarPerawatan[jumlahPerawatan++] = new PerawatanTubuh("Body Scrub", 200000, 60, "Seluruh Tubuh");
@@ -123,7 +121,6 @@ public class KlinikKecantikan {
                                 int harga = bacaAngka(scanner, "Masukkan Harga (Rp): ");
                                 int durasi = bacaAngka(scanner, "Masukkan Durasi (menit): ");
 
-                                // UPCASTING: objek subclass disimpan di array bertipe Perawatan
                                 if (jenis == 1) {
                                     System.out.print("Masukkan Jenis Kulit (Berminyak/Kering/Sensitif/dll): ");
                                     String jenisKulit = scanner.nextLine();
@@ -154,12 +151,12 @@ public class KlinikKecantikan {
                         if (jumlahPerawatan == 0) {
                             System.out.println("Belum ada perawatan yang terdaftar.");
                         } else {
-                            // RUNTIME POLYMORPHISM: variabelnya bertipe Perawatan,
-                            // tetapi method yang jalan milik objek aslinya (DYNAMIC BINDING).
                             for (int i = 0; i < jumlahPerawatan; i++) {
                                 System.out.print((i + 1) + ". ");
                                 daftarPerawatan[i].tampilkanInfo();
                                 daftarPerawatan[i].infoPersiapan();
+                                daftarPerawatan[i].hitungBiayaTambahan();
+                                jalankanFiturInterface(daftarPerawatan[i]);
                             }
                             System.out.println("\n* Total Perawatan Terdaftar: " + Perawatan.getTotalPerawatan());
                         }
@@ -176,14 +173,14 @@ public class KlinikKecantikan {
                         if (mode == 1) {
                             System.out.print("Masukkan Nama / Kata Kunci: ");
                             String kunci = scanner.nextLine();
-                            cariPerawatan(kunci, daftarPerawatan, jumlahPerawatan);        // versi String
+                            cariPerawatan(kunci, daftarPerawatan, jumlahPerawatan);
                         } else if (mode == 2) {
                             int maks = bacaAngka(scanner, "Masukkan Harga Maksimal (Rp): ");
-                            cariPerawatan(maks, daftarPerawatan, jumlahPerawatan);         // versi int
+                            cariPerawatan(maks, daftarPerawatan, jumlahPerawatan);
                         } else if (mode == 3) {
                             int min = bacaAngka(scanner, "Masukkan Harga Minimal (Rp): ");
                             int maks = bacaAngka(scanner, "Masukkan Harga Maksimal (Rp): ");
-                            cariPerawatan(min, maks, daftarPerawatan, jumlahPerawatan);    // versi int, int
+                            cariPerawatan(min, maks, daftarPerawatan, jumlahPerawatan);
                         } else {
                             System.out.println("Pilihan tidak valid.");
                         }
@@ -200,7 +197,6 @@ public class KlinikKecantikan {
                             }
                             int nomor = bacaAngka(scanner, "Pilih nomor perawatan: ");
                             if (nomor >= 1 && nomor <= jumlahPerawatan) {
-                                // objek subclass apa pun dikirim ke parameter bertipe Perawatan
                                 simulasiPerawatan(daftarPerawatan[nomor - 1]);
                             } else {
                                 System.out.println("Nomor tidak valid.");
